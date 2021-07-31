@@ -1,0 +1,301 @@
+AD 6.0
+
+import-module activedirectory
+
+New-Item -ItemType Directory -Force -Path $Home\Documents\PSNotes
+
+$cred = New-Object Management.Automation.PSCredential “cw308186-admin”, (“ThispasswordisdumbandsoamI@2020” | ConvertTo-SecureString -AsPlainText -Force)
+
+Function Menu
+
+{
+
+    Clear-Host       
+
+    Do
+
+    {
+
+        Clear-Host                                                                       
+
+        Write-Host
+
+        Write-Host     -Object '*******************************' -ForegroundColor Green
+
+        Write-Host -Object '   Active Directory Tools' -ForegroundColor Yellow
+
+        Write-Host     -Object '******************************' -ForegroundColor Green
+
+        Write-Host
+
+        Write-Host -Object '1.  Check AD Account '
+
+        Write-Host -Object ''
+
+        Write-Host -Object '2.  Unlock AD Account ' -ForegroundColor Red
+
+        Write-Host -Object ''
+
+        Write-Host -Object '3.  pass '-ForegroundColor Yellow
+
+        Write-Host -Object ''
+
+        Write-Host -Object '4.  Get IP Address from Hostname ' -ForegroundColor Cyan
+
+        Write-Host -Object ''
+
+        Write-Host -Object 'Q.  Quit'
+
+     # Write-Host -Object '5.  Whatever option #5 '
+
+        Write-Host -Object ''
+
+      # Write-Host -Object '6.  Whatever option #6 '
+
+        Write-Host -Object ''
+
+        Write-Host -Object $errout
+
+        $Menu = Read-Host -Prompt ' Your Choices are 1,2,3,4 or Q to Quit'
+
+        Write-Host
+
+        Write-Host
+
+        switch ($Menu)
+
+        {
+
+           1
+
+            {
+
+ 
+
+                $sid = Read-Host 'What is the username?'
+
+$object = Get-ADUser $sid -Properties * | Select-Object GivenName , Surname, SamAccountName, DisplayName,
+
+City, EmailAddress, EmployeeID, Enabled, OfficePhone, MobilePhone, LockedOut, LockOutTime, whenCreated, AccountExpirationDate, PasswordExpired, PasswordLastSet
+
+#Net user $sid /domain
+
+
+cls
+
+$name = ($object.GivenName +' '+ $object.Surname)
+
+Write-Host Name: $name
+
+ 
+Write-Host Email: $object.EmailAddress
+
+Write-Host Phone: $object.OfficePhone
+
+$uid = $object.SamAccountName
+
+Write-Host User ID: $uid
+
+$uid | clip
+
+Write-Host Vendor: 
+
+Write-Host Location: $object.City
+
+Write-Host PC_Name/Type: 
+
+Write-Host Issue/Request: 
+
+Write-Host Previous Ticket: 
+
+#Write-Host Application: 
+
+Write-Host Troubleshooting: 
+
+Write-Host Issue after troubleshooting:
+
+Write-Host
+
+Write-Host *************************************************************
+
+Write-Host Enabled: $object.Enabled
+
+Write-Host Locked out: $object.LockedOut
+
+Write-Host Account Created:  $object.whenCreated
+
+Write-Host Account Expires on: $object.AccountExpirationDate
+
+Write-Host Password Expired: $object.PasswordExpired
+
+Write-Host Last time password was reset: $object.PasswordLastSet
+
+Write-Host Password Last Set:
+
+Write-Host ***************************************************************
+
+Write-Host
+
+ 
+
+Add-Content -Path "$Home\Documents\PSNotes\TicketLog.txt" -Value "Name: $name"
+
+Add-Content -Path "$Home\Documents\PSNotes\TicketLog.txt" -Value "Email: $((Get-ADUser $sid -properties mail).mail)"
+
+Add-Content -Path "$Home\Documents\PSNotes\TicketLog.txt" -Value "Phone: $((Get-ADUser $sid -properties OfficePhone).phone)"
+
+Add-Content -Path "$Home\Documents\PSNotes\TicketLog.txt" -Value "UserID: $((Get-ADUser $sid -properties SamAccountName).SamAccountName)"
+
+Add-Content -Path "$Home\Documents\PSNotes\TicketLog.txt" -Value "Vendor:"
+
+Add-Content -Path "$Home\Documents\PSNotes\TicketLog.txt" -Value "Location: $((Get-ADUser $sid -properties City).City)"
+
+Add-Content -Path "$Home\Documents\PSNotes\TicketLog.txt" -Value "PC_Name/Type "
+
+#Add-Content -Path "$Home\Documents\PSNotes\TicketLog.txt" -Value "IP Address: "
+
+Add-Content -Path "$Home\Documents\PSNotes\TicketLog.txt" -Value "Issue/Request "
+
+Add-Content -Path "$Home\Documents\PSNotes\TicketLog.txt" -Value "Previous Ticket: "
+
+#Add-Content -Path "$Home\Documents\PSNotes\TicketLog.txt" -Value "Application: "
+
+Add-Content -Path "$Home\Documents\PSNotes\TicketLog.txt" -Value "Troubleshooting "
+
+Add-Content -Path "$Home\Documents\PSNotes\TicketLog.txt" -Value "Issue after troubleshooting: "
+
+Add-Content -Path "$Home\Documents\PSNotes\TicketLog.txt" -Value ""
+
+$TimeStamp = Get-Date
+
+Add-Content -Path "$Home\Documents\PSNotes\TicketLog.txt" -Value "TimeStamp: $TimeStamp"
+
+Add-Content -Path "$Home\Documents\PSNotes\TicketLog.txt" -Value ""
+
+Add-Content -Path "$Home\Documents\PSNotes\TicketLog.txt" -Value "**********************************************************************"
+
+Add-Content -Path "$Home\Documents\PSNotes\TicketLog.txt" -Value "Enabled: $((Get-ADUser $sid -properties Enabled).Enabled)"
+
+Add-Content -Path "$Home\Documents\PSNotes\TicketLog.txt" -Value "Locked Out: $((Get-ADUser $sid -properties LockedOut).LockedOut)"
+
+Add-Content -Path "$Home\Documents\PSNotes\TicketLog.txt" -Value "Account Created: $((Get-ADUser $sid -properties whenCreated).whenCreated)"
+
+Add-Content -Path "$Home\Documents\PSNotes\TicketLog.txt" -Value "Account Expires on: $((Get-ADUser $sid -properties AccountExpirationDate).AccountExpirationDate)"
+
+Add-Content -Path "$Home\Documents\PSNotes\TicketLog.txt" -Value "Password Expired: $((Get-ADUser $sid -properties PasswordExpired).PasswordExpired)"
+
+Add-Content -Path "$Home\Documents\PSNotes\TicketLog.txt" -Value "Password Last Set: $((Get-ADUser $sid -properties PasswordLastSet).PasswordLastSet)"
+
+Add-Content -Path "$Home\Documents\PSNotes\TicketLog.txt" -Value "**********************************************************************"
+
+Add-Content -Path "$Home\Documents\PSNotes\TicketLog.txt" -Value ""
+
+Add-Content -Path "$Home\Documents\PSNotes\TicketLog.txt" -Value ""
+
+Add-Content -Path "$Home\Documents\PSNotes\TicketLog.txt" -Value ""
+
+#Add-Content -Path "$Home\Documents\PSNotes\TicketLog.txt" -Value "IPAddress"
+
+ 
+
+$msg = 'Do you want to see group memberships? [Y/N]'
+
+do {
+
+$response = Read-Host -Prompt $msg
+
+if ($response -eq 'y') {
+
+Get-ADPrincipalGroupMembership $sid | select name  | Format-Table -AutoSize
+
+    }
+
+  
+
+} until ($response -eq 'n')
+
+            }
+
+            2
+
+            { 
+
+                $username = read-host "Enter username you want to unlock"
+
+                Unlock-ADaccount -identity $username -credential $cred
+
+            }
+
+            3
+
+            {
+
+                Set-Clipboard -Value "ThispasswordisdumbandsoamI@2020"
+
+            }
+
+            4
+
+            {
+
+                $pc = read-host "Enter Laptop Serial (5CG....) for IP Address"
+
+                Resolve-DNSName -Name "$pc" -type A |
+
+                Select Name,IPAddress,
+
+                @{Name="Responding";Expression={ Test-Connection $_.Name -quiet}}
+
+                pause
+
+               
+
+            }
+
+            5
+
+            {
+
+                #Option #5
+
+            }
+
+            6
+
+            {
+
+                #Option #6
+
+            }
+
+            Q
+
+            {
+
+                Exit
+
+            }  
+
+            default
+
+            {
+
+                $errout = ''
+
+            }
+
+ 
+
+        }
+
+    }
+
+    until ($Menu -eq 'q')
+
+}  
+
+ 
+
+# Launch The Menu
+
+Menu
