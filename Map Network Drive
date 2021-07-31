@@ -1,0 +1,3 @@
+$sid = 'Username'
+net use A: \\Network\folder\1 /Persistent:Yes
+net use B: \\Network\Folder\2 /Persistent:Yes
