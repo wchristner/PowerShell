@@ -1,0 +1,3 @@
+Resolve-DNSName -Name "Hostname" -type A |
+Select Name,IPAddress,
+@{Name="Responding";Expression={ Test-Connection $_.Name -quiet}}
