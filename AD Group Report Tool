@@ -1,0 +1,171 @@
+<#
+
+.NOTES
+
+===========================================================================
+
+Created with: PowerShell
+
+Created on:   6/8/2020 3:51 PM
+
+Created by:   William Christner
+
+Organization: ########
+
+Filename:     AD Group Report
+
+===========================================================================
+
+.DESCRIPTION
+
+Search AD groups, create a .CSV report of users in the group.
+
+#>
+
+ 
+
+####################################################################
+
+import-module ActiveDirectory
+
+####################################################################
+
+ 
+
+ 
+
+Add-Type -AssemblyName System.Windows.Forms
+
+Add-Type -AssemblyName System.Drawing
+
+ 
+
+$form = New-Object System.Windows.Forms.Form
+
+$form.Text = 'Select AD Group'
+
+$form.Size = New-Object System.Drawing.Size(350, 140)
+
+$form.StartPosition = 'CenterScreen'
+
+ 
+
+$okButton = New-Object System.Windows.Forms.Button
+
+$okButton.Location = New-Object System.Drawing.Point(125, 50)
+
+$okButton.Size = New-Object System.Drawing.Size(75, 23)
+
+$okButton.Text = 'OK'
+
+$okButton.DialogResult = [System.Windows.Forms.DialogResult]::OK
+
+#$form.AcceptButton = $okButton
+
+$form.Controls.Add($okButton)
+
+$okButton.add_Click({
+
+######################################################################################################
+
+$GroupName = $textBox.Text
+
+$Date = Get-Date -UFormat "%m.%d.%y_%H.%M"
+
+$Members = Get-ADGroupMember -Identity $GroupName -Recursive | Select -ExpandProperty SAMAccountName
+
+ 
+
+Foreach ($Name in $Members) {
+
+Get-ADUser $Name -properties * | Select EmailAddress,SAMAccountName,DisplayName,OfficePhone,CanonicalName,Enabled |
+
+Export-Csv -append C:\Reports\$($GroupName)_Membership_Detailed_$($Date).csv -NoTypeInformation -Encoding UTF8 }
+
+})
+
+#####################################################################################################################
+
+ 
+
+$cancelButton = New-Object System.Windows.Forms.Button
+
+$cancelButton.Location = New-Object System.Drawing.Point(225, 50)
+
+$cancelButton.Size = New-Object System.Drawing.Size(75, 23)
+
+$cancelButton.Text = 'Cancel'
+
+$cancelButton.DialogResult = [System.Windows.Forms.DialogResult]::Cancel
+
+$form.CancelButton = $cancelButton
+
+$form.Controls.Add($cancelButton)
+
+ 
+
+$label = New-Object System.Windows.Forms.Label
+
+$label.Location = New-Object System.Drawing.Point(10, 20)
+
+$label.Size = New-Object System.Drawing.Size(130, 20)
+
+$label.Text = 'Please select AD Group:'
+
+$form.Controls.Add($label)
+
+ 
+
+ 
+
+$textBox = New-Object System.Windows.Forms.TextBox
+
+$textBox.Location = New-Object System.Drawing.Point(150, 15)
+
+$textBox.Size = New-Object System.Drawing.Size(150, 40)
+
+$form.Controls.Add($textBox)
+
+$textbox.AutoCompleteSource = 'CustomSource'
+
+$textbox.AutoCompleteMode = 'SuggestAppend'
+
+$textbox.AutoCompleteCustomSource = $autocomplete
+
+"ad group name 1",
+
+"ad group name 2",
+
+"ad geoup name 3"
+
+| % { $textbox.AutoCompleteCustomSource.AddRange($_) }
+
+ 
+
+#[void]$listBox.Items.Add('atl-dc-001')
+
+ 
+
+ 
+
+$form.Controls.Add($listBox)
+
+ 
+
+$form.Topmost = $true
+
+ 
+
+$result = $form.ShowDialog()
+
+ 
+
+if ($result -eq [System.Windows.Forms.DialogResult]::OK)
+
+{
+
+$x = $listBox.SelectedItem
+
+$x
+
+}
